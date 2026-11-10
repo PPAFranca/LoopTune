@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ t("app.title") }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <nav class="navbar" aria-label="Main">
+        < a class="brand" href="{{ url_for('index') }}">{{ t("app.title") }}</a>
+
+        <ul class="nav-links">
+            {% for endpoint, key in [
+                ("metronome", "nav.metronome"),
+                ("pitchpipe", "nav.pitchpipe"),
+                ("tuner", "nav.tuner"),
+                ("looper", "nav.looper")
+            ] %}
+            <li>
+                <a href="{{ url_for(endpoint) }}"
+                    {% if request.endpoint == endpoint %}aria-current="page"{% endif %}>
+                    {{ t(key) }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <div class="lang-switch">
+            <a href="{{ url_for('set_language' lang='en') }}"
+                {% if lang == "en" %}aria-current="true"{% endif %}>EN</a>
+            <a href="{{ url_for('set_language' lang='pt-BR') }}"
+                {% if lang == "pt-BR" %}aria-current="true"{% endif %}>BR</a>
+        </div>
+    </header>
+
+    <main>
+        {% block main %}{% endblock %}
+    </main>
+    
+    <script>window.I18N = {{ translations | tojson }};</script> <!-- claude Sonnet 5.5 wrote this line -->
+    {% block scripts %} <!--<script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>--> {% endblock %}
+    
+</body>
+</html>
+
