@@ -1,0 +1,13 @@
+{
+    "app.title": "LoopTune",
+    "nav.metronome": "Metrônomo",
+    "nav.pitchpipe": "Diapasão",
+    "nav.tuner": "Afinador",
+    "nav.looper": "Looper",
+    "home.heading": "Este é o LoopTune",
+    "home.tagline": "Metrônomo, Diapasão, Afinador e Looper em um só lugar",
+    "home.metronome": "Marque o tempo com andamento e compasso ajustáveis e acento no primeiro tempo. Toque no ritmo para descobrir o andamento.",
+    "home.pitchpipe": "Toque qualquer nota de referência, ou as cordas soltas do seu instrumento, para afinar de ouvido.",
+    "home.tuner": "Toque uma nota e veja, pelo microfone, se ela está acima ou abaixo da afinação.",
+    "home.looper": "Grave camadas sobre o metrônomo, empilhe-as em um loop e exporte cada gravação."
+}

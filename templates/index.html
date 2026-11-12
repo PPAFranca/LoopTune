@@ -1,5 +1,24 @@
 {% extends "layout.html" %}
 
 {% block main %}
+    <header class="hero text-center">
+        <h1>{{ t("home.heading") }}</h1>
+        <h2>{{ t("home.tagline") }}</h2>
+    </header>
 
+    <section>
+        <div class="cards">
+        {% for f in FEATURES %}
+            <div>
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title">{{ t("nav." ~ f ) }}</h3> {# claude told me about ~ operator #}
+                        <p class="card-text">{{ t("home." ~ f ) }}</p>
+                        <a class="card-link stretched-link" href="{{ url_for(f) }}"></a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </section>
 {% endblock %}
