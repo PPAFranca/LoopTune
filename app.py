@@ -32,7 +32,7 @@ def current_language():
     return DEFAULT_LANG
 
 
-# claude Sonnet 5.5 wrote this function
+# Written with help from Claude (Anthropic).
 @app.route("/language/<lang>")
 def set_language(lang):
     # Go back to the page the user came from, but only if it's on this site
@@ -46,7 +46,7 @@ def set_language(lang):
     return response
 
 
-# claude Sonnet 5.5 wrote this function
+# Written with help from Claude (Anthropic).
 @app.context_processor
 def inject_translations():
     lang = current_language()
@@ -55,8 +55,11 @@ def inject_translations():
     def t(key):
         return strings.get(key, key)
 
-    return {"lang": lang, "t": t, "translations": strings, "SUPPORTED": SUPPORTED, "FEATURES": FEATURES}
+    return {"lang": lang, "t": t, "translations": strings}
 
+@app.context_processor
+def inject_constants():
+    return {"SUPPORTED": SUPPORTED, "FEATURES": FEATURES}
 
 @app.route("/")
 def index():

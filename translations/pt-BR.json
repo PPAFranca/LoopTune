@@ -9,5 +9,21 @@
     "home.metronome": "Marque o tempo com andamento e compasso ajustáveis e acento no primeiro tempo. Toque no ritmo para descobrir o andamento.",
     "home.pitchpipe": "Toque qualquer nota de referência, ou as cordas soltas do seu instrumento, para afinar de ouvido.",
     "home.tuner": "Toque uma nota e veja, pelo microfone, se ela está acima ou abaixo da afinação.",
-    "home.looper": "Grave camadas sobre o metrônomo, empilhe-as em um loop e exporte cada gravação."
+    "home.looper": "Grave camadas sobre o metrônomo, empilhe-as em um loop e exporte cada gravação.",
+    "common.instrument": "Instrumento",
+    "common.a4": "Lá4",
+    "common.note_style": "Notação",
+    "common.letters": "A",
+    "common.solfege": "Lá",
+    "common.semitone_down": "Meio tom abaixo",
+    "common.semitone_up": "Meio tom acima",
+    "common.start": "PLAY",
+    "common.stop": "PAUSE",
+    "instrument.guitar": "Violão/Guitarra",
+    "instrument.bass": "Baixo",
+    "instrument.violin": "Violino",
+    "instrument.viola": "Viola",
+    "instrument.cello": "Violoncelo",
+    "instrument.ukulele": "Ukulele",
+    "instrument.chromatic": "Cromático"    
 }

@@ -19,6 +19,13 @@
     max-width: 900px;
 }
 
+.input-narrow {
+    width: 5rem;
+}
+.input-narrow::-webkit-inner-spin-button,
+.input-narrow::-webkit-outer-spin-button {
+    opacity: 1;
+}
 
 @media (min-width: 576px) {
     .navbar-top {

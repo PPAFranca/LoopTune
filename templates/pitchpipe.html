@@ -1,5 +1,53 @@
+{# Written with help from Claude (Anthropic), per CS50's rules on citing AI. #}
+
 {% extends "layout.html" %}
 
+{% block title %}{{ t("nav.pitchpipe") }}{% endblock %}
+
 {% block main %}
-    <h1>Hello pitchpipe</h1>
+<div class="text-center">
+    <h1>{{ t("nav.pitchpipe") }}</h1>
+
+    <div class="mb-3">
+        <label for="instrument" class="form-label">{{ t("common.instrument") }}</label>
+        <select class="form-select w-auto mx-auto" id="instrument"></select>
+    </div>
+
+    <div class="mb-3">
+        <span class="form-label d-block">{{ t("common.note_style") }}</span>
+        <div class="btn-group" role="group" aria-label="{{ t('common.note_style') }}">
+            <input type="radio" class="btn-check" name="note-style" id="style-letters" value="letters" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="style-letters">{{ t("common.letters") }}</label>
+ 
+            <input type="radio" class="btn-check" name="note-style" id="style-solfege" value="solfege" autocomplete="off">
+            <label class="btn btn-outline-primary" for="style-solfege">{{ t("common.solfege") }}</label>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="a4" class="form-label">{{ t("common.a4") }}</label>
+        <input type="number" class="form-control input-narrow mx-auto" id="a4" min="415" max="466" value="440">
+    </div>
+
+    <div class="mb-3">
+        <div class="input-group d-inline-flex w-auto">
+            <select class="form-select" id="note"></select>
+            <button type="button" class="btn btn-outline-secondary" id="flat-btn"
+                    aria-label="{{ t('common.semitone_down') }}"
+                    title="{{ t('common.semitone_down') }}">♭</button>
+
+            <button type="button" class="btn btn-outline-secondary" id="sharp-btn"
+                    aria-label="{{ t('common.semitone_up') }}"
+                    title="{{ t('common.semitone_up') }}">♯</button>
+        </div>
+    </div>
+
+    <p id="now-playing" class="fs-4" aria-live="polite"></p>
+
+    <button type="button" class="btn btn-primary" id="play-btn" aria-pressed="false">{{ t("common.start") }}</button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="module" src="{{ url_for('static', filename='js/pitchpipe.js') }}"></script>
 {% endblock %}

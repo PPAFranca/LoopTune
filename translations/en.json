@@ -9,5 +9,21 @@
     "home.metronome": "Keep steady time with an adjustable tempo, time signature and accented first beat. Tap along to find a tempo.",
     "home.pitchpipe": "Play any reference note, or the open strings of your instrument, to tune by ear.",
     "home.tuner": "Play a note and see through your microphone how sharp or flat it is.",
-    "home.looper": "Record layers over a metronome, stack them into a loop and export every take."
+    "home.looper": "Record layers over a metronome, stack them into a loop and export every take.",
+    "common.instrument": "Instrument",
+    "common.a4": "A4",
+    "common.note_style": "Note style",
+    "common.letters": "A",
+    "common.solfege": "La",
+    "common.semitone_down": "Semitone down",
+    "common.semitone_up": "Semitone up",
+    "common.start": "START",
+    "common.stop": "STOP",
+    "instrument.guitar": "Guitar",
+    "instrument.bass": "Bass",
+    "instrument.violin": "Violin",
+    "instrument.viola": "Viola",
+    "instrument.cello": "Cello",
+    "instrument.ukulele": "Ukulele",
+    "instrument.chromatic": "Chromatic"    
 }
