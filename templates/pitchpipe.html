@@ -25,8 +25,11 @@
     </div>
 
     <div class="mb-3">
-        <label for="a4" class="form-label">{{ t("common.a4") }}</label>
-        <input type="number" class="form-control input-narrow mx-auto" id="a4" min="415" max="466" value="440">
+        <label for="a4" class="form-label d-block">{{ t("common.a4") }}</label>
+        <div class="input-group d-inline-flex w-auto">
+            <input type="number" class="form-control input-narrow" id="a4" min="415" max="466" value="440">
+            <span class="input-group-text">Hz</span>
+        </div>
     </div>
 
     <div class="mb-3">

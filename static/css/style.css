@@ -19,14 +19,18 @@
     max-width: 900px;
 }
 
-.input-narrow {
+/* Written with help from Claude (Anthropic). */
+.input-narrow,
+.input-group > .input-narrow {
     width: 5rem;
+    flex: none;
 }
 .input-narrow::-webkit-inner-spin-button,
 .input-narrow::-webkit-outer-spin-button {
     opacity: 1;
 }
 
+/* Written with help from Claude (Anthropic). */
 @media (min-width: 576px) {
     .navbar-top {
         display: contents;
@@ -34,6 +38,7 @@
     }
 }
 
+/* Written with help from Claude (Anthropic). */
 @media (max-width: 575.98px) {
     .cards { grid-template-columns: 1fr; }
     .navbar-top {

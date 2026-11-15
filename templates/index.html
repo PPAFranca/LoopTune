@@ -14,7 +14,7 @@
                     <div class="card-body">
                         <h3 class="card-title">{{ t("nav." ~ f ) }}</h3> {# claude told me about ~ operator #}
                         <p class="card-text">{{ t("home." ~ f ) }}</p>
-                        <a class="card-link stretched-link" href="{{ url_for(f) }}"></a>
+                        <a class="card-link stretched-link" href="{{ url_for(f) }}"><span class="visually-hidden">{{ t("nav." ~ f ) }}</span></a>
                     </div>
                 </div>
             </div>
