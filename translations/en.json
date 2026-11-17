@@ -19,6 +19,16 @@
     "common.semitone_up": "Semitone up",
     "common.start": "START",
     "common.stop": "STOP",
+    "common.octave": "Octave",
+    
+    "solfege.C": "Do",
+    "solfege.D": "Re",  
+    "solfege.E": "Mi",
+    "solfege.F": "Fa",
+    "solfege.G": "Sol",
+    "solfege.A": "La",
+    "solfege.B": "Si",
+
     "instrument.guitar": "Guitar",
     "instrument.bass": "Bass",
     "instrument.violin": "Violin",

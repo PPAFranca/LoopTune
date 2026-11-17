@@ -10,3 +10,37 @@ export const INSTRUMENTS_PRESETS = {
     cello:     { strings: [36, 43, 50, 57],         min_midi: 32, max_midi: 69  },
     ukulele:   { strings: [67, 60, 64, 69],         min_midi: 56, max_midi: 81  },
 };
+
+export function clamp(value, min, max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+}
+
+export function midiToFreq(midi, a4=440) {
+    return a4 * Math.pow(2, (midi - 69) / 12);
+}
+
+export function letterToMidi(letter, octave) {
+    const noteMap = {
+        C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11
+    };
+    const noteIndex = noteMap[letter];
+    if (noteIndex === undefined) return null;
+    return (octave + 1) * 12 + noteIndex;
+}
+
+export function midiToName(midi, useFlats=false) {
+    const noteSharp = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
+    const noteFlat  = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B'];
+    const noteNames = useFlats ? noteFlat : noteSharp;
+    const note = noteNames[midi % 12];
+    const letter = note[0];
+    const accidental = note.slice(1);
+    const octave = Math.floor(midi / 12) - 1;
+    return { letter, accidental, octave };
+}
+
+export function stepSemitone(midi, direction) {
+    return { midi: midi + direction, useFlats: direction < 0 };
+}

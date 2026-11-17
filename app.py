@@ -4,8 +4,6 @@ from urllib.parse import urlparse
 import json
 import os
 
-
-
 app = Flask(__name__)
 
 FEATURES = ["metronome", "pitchpipe", "tuner", "looper"]
