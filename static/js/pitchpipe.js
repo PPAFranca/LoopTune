@@ -176,6 +176,82 @@ for (const radio of document.querySelectorAll('input[name="note-style"]')) {
 }
 
 a4_input.addEventListener("change", () => {
-    a4 = clamp(Number(a4_input.value), 415, 466);
-    updateDisplay();
+    if (Number.isFinite(Number(a4_input.value))) {
+        a4 = clamp(Number(a4_input.value), 415, 466);
+        a4_input.value = a4;
+        updateDisplay();
+    }
+});
+
+
+// Written with help from Claude (Anthropic), per CS50's rules on citing AI.
+let context;
+let oscillator;
+let start_attempt = 0;
+
+// Before: play_btn.textContent = window.I18N["common.start"]; (repeated in 3 places, no fallback)
+function set_button_label() {
+    const key = playing ? "common.stop" : "common.start";
+    play_btn.textContent = window.I18N[key] ?? key;
+}
+
+async function start_tone() {
+    // Before: (no attempt counter)
+    const attempt = ++start_attempt;
+    playing = true;
+    // Before: the label only changed to Stop after oscillator.start()
+    set_button_label();
+
+    // Before: let started = false;   (removed along with the finally block)
+    try {
+        context ??= new AudioContext();
+
+        if (context.state === "suspended") {
+            await context.resume();
+        }
+
+        // Before: if (!playing) return;
+        if (attempt !== start_attempt) return;
+
+        // Before: oscillator = context.createOscillator(); oscillator.type = ...; etc.
+        // (all four lines used the module-level variable directly)
+        const osc = context.createOscillator();
+        osc.type = "sine";
+        osc.frequency.value = midiToFreq(midi, a4);
+        osc.connect(context.destination);
+        osc.addEventListener("ended", () => osc.disconnect());
+        osc.start();
+        oscillator = osc;
+
+    // Before: } finally { if (!started) { playing = false; play_btn.textContent = ...; } }
+    } catch (error) {
+        console.error(error);
+        if (attempt === start_attempt) {
+            playing = false;
+            set_button_label();
+        }
+    }
+}
+
+function stop_tone() {
+    // Before: (no counter, so a Stop during the await could not cancel a pending start)
+    start_attempt++;
+
+    if (oscillator) {
+        oscillator.stop();
+        // Before: oscillator.disconnect();   (now done by the ended listener)
+        oscillator = null;
+    }
+
+    // Before: playing = false; play_btn.textContent = window.I18N["common.start"];
+    playing = false;
+    set_button_label();
+}
+
+play_btn.addEventListener("click", () => {
+    if (playing) {
+        stop_tone();
+    } else {
+        start_tone();
+    }
 });
