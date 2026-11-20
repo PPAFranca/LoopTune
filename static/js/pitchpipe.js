@@ -14,7 +14,7 @@ let instrument = 'chromatic';
 let midi = 69;
 let use_flats = false;
 let a4 = 440;
-let note_style = 'solfege';
+let note_style = 'letters';
 let playing = false;
 let preset = INSTRUMENTS_PRESETS[instrument]; 
 
