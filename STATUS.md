@@ -34,12 +34,16 @@ Redundant calls: the note and octave handlers call updateDisplay() right after s
 letterToMidi returns null for an unknown letter, and Number(null) is 0, so it would silently clamp to the lowest note. Can't happen with the current select; guard it before the tuner reuses it.
 With an accidental selected (say C♯4), the note select shows "C" while the now-playing line says "C♯4". Probably fine, but decide on purpose.
 The Start button has aria-pressed="false" and its label will switch to STOP. Use one pattern only: constant label + aria-pressed, or changing label without aria-pressed. Otherwise a screen reader says "STOP, pressed".
+
+
 Pitch pipe roadmap
+
 Phase 1: fix the bugs (small, then commit)
 Make the note style start from one source of truth (the checked radio now, localStorage later).
 Wire the A4 input to the change event, not input: typing "440" passes through "4" and "44", and clamping mid-typing would fight the user. Handler: if the field is empty or NaN, restore the last valid value (Number('') is 0 and would silently become 415); otherwise clamp to 415-466, write the clamped value back into the field, update a4, call updateDisplay().
 Remove the redundant updateDisplay() calls and double Number().
 Done when: A4 = 415 shows 415.0 Hz for A4; 500 snaps to 466; empty snaps back; the highlighted style button always matches the labels on load.
+
 Phase 2: sound
 Create the AudioContext on the first Start click (browsers block audio before a user gesture) and resume() it if it is suspended. One context for the page.
 OscillatorNode -> GainNode -> destination. Oscillators are one-shot: create a new one on each Start; never reuse one after stop().
@@ -49,12 +53,14 @@ Start with a low gain and test with headphones.
 Waveform: a pure sine is thin and nearly inaudible for low notes on laptop and phone speakers (bass E1 is 41 Hz, guitar E2 82 Hz). A triangle wave, or a custom wave with a few harmonics, is easier to hear and to match by ear, because the ear infers the pitch from the harmonics even when the speaker cannot reproduce the fundamental ("missing fundamental"). Try triangle first.
 Button text from i18n (common.start/common.stop) and the aria pattern from bug 7.
 Done when: Start gives a steady tone at midiToFreq(midi, a4); Stop is click-free; changing anything while playing updates the pitch without restarting; no console errors in Chrome and Firefox.
+
 Phase 3: preferences (localStorage)
 Save instrument, A4 and note style (not the playing state; the last note is optional).
 Every read and write in try/catch. Validate on load: instrument must be a key of INSTRUMENTS_PRESETS, A4 clamped to 415-466, style one of letters/solfege; otherwise use the defaults.
 Put the load/save helpers in shared.js with one key prefix, because the tuner needs the same three settings and both pages must read the same values.
 Decide the first-visit note style (see open decisions).
 Done when: settings survive a reload; with a corrupted value set by hand in DevTools, the page still loads with defaults.
+
 Phase 4: polish, review, commit
 Switch to pt-BR: every label translated (Lá, Dó...), no raw keys, aria-labels translated. Any new key goes into both JSON files in the same commit.
 Narrow window: controls wrap sensibly, buttons are easy to tap.

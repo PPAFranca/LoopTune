@@ -175,3 +175,7 @@ for (const radio of document.querySelectorAll('input[name="note-style"]')) {
     radio.addEventListener("change", changeNoteStyle);
 }
 
+a4_input.addEventListener("change", () => {
+    a4 = clamp(Number(a4_input.value), 415, 466);
+    updateDisplay();
+});
