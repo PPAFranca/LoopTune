@@ -30,10 +30,10 @@ export function letterToMidi(letter, octave) {
     return (octave + 1) * 12 + noteIndex;
 }
 
-export function midiToName(midi, useFlats=false) {
+export function midiToName(midi, use_flats=false) {
     const noteSharp = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
     const noteFlat  = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B'];
-    const noteNames = useFlats ? noteFlat : noteSharp;
+    const noteNames = use_flats ? noteFlat : noteSharp;
     const note = noteNames[midi % 12];
     const letter = note[0];
     const accidental = note.slice(1);
@@ -42,5 +42,5 @@ export function midiToName(midi, useFlats=false) {
 }
 
 export function stepSemitone(midi, direction) {
-    return { midi: midi + direction, useFlats: direction < 0 };
+    return { midi: midi + direction, use_flats: direction < 0 };
 }

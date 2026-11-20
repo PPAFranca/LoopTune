@@ -17,9 +17,11 @@
     "common.solfege": "Lá",
     "common.semitone_down": "Meio tom abaixo",
     "common.semitone_up": "Meio tom acima",
-    "common.start": "PLAY",
-    "common.stop": "PAUSE",
+    "common.start": "Iniciar",
+    "common.stop": "Parar",
+    "common.note": "Nota",
     "common.octave": "Oitava",
+
     "solfege.C": "Dó",
     "solfege.D": "Ré",
     "solfege.E": "Mi",
@@ -27,6 +29,7 @@
     "solfege.G": "Sol",
     "solfege.A": "Lá",
     "solfege.B": "Si",
+
     "instrument.guitar": "Violão/Guitarra",
     "instrument.bass": "Baixo",
     "instrument.violin": "Violino",

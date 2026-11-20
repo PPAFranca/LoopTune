@@ -32,16 +32,24 @@
         </div>
     </div>
 
-    <div class="mb-3">
+    <div class="mb-3 d-flex justify-content-center gap-2">
         <div class="input-group d-inline-flex w-auto">
-            <select class="form-select" id="note"></select>
-            <button type="button" class="btn btn-outline-secondary" id="flat-btn"
-                    aria-label="{{ t('common.semitone_down') }}"
-                    title="{{ t('common.semitone_down') }}">♭</button>
+            <select class="form-select" id="note" aria-label="{{ t('common.note') }}"></select>
+        </div>
 
-            <button type="button" class="btn btn-outline-secondary" id="sharp-btn"
-                    aria-label="{{ t('common.semitone_up') }}"
-                    title="{{ t('common.semitone_up') }}">♯</button>
+        <div id="chromatic-controls" hidden>
+            <label for="octave" class="visually-hidden">{{ t('common.octave') }}</label>
+            <div class="input-group d-inline-flex w-auto">
+                <select class="form-select" id="octave"></select>
+
+                <button type="button" class="btn btn-outline-secondary" id="flat-btn"
+                        aria-label="{{ t('common.semitone_down') }}"
+                        title="{{ t('common.semitone_down') }}">♭</button>
+
+                <button type="button" class="btn btn-outline-secondary" id="sharp-btn"
+                        aria-label="{{ t('common.semitone_up') }}"
+                        title="{{ t('common.semitone_up') }}">♯</button>
+            </div>
         </div>
     </div>
 
