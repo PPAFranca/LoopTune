@@ -216,10 +216,13 @@ async function start_tone() {
         // Before: oscillator = context.createOscillator(); oscillator.type = ...; etc.
         // (all four lines used the module-level variable directly)
         const osc = context.createOscillator();
+        const gain_node = context.createGain()
+        gain_node.gain.setValueAtTime(0, context.currentTime);
+        gain_node.gain.linearRampToValueAtTime(0.2, context.currentTime + 0.03);
         osc.type = "sine";
         osc.frequency.value = midiToFreq(midi, a4);
-        osc.connect(context.destination);
-        osc.addEventListener("ended", () => osc.disconnect());
+        osc.connect(gain_node).connect(context.destination);
+        osc.addEventListener("ended", () => {osc.disconnect(), gain_node.disconnect()});
         osc.start();
         oscillator = osc;
 
