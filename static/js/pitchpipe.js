@@ -184,10 +184,11 @@ a4_input.addEventListener("change", () => {
 });
 
 
-// Written with help from Claude (Anthropic), per CS50's rules on citing AI.
+// Written with help from Claude (Anthropic), per CS50's rules on citing AI. (The gain logic was me.)
 let context;
 let oscillator;
 let start_attempt = 0;
+let gain;
 
 // Before: play_btn.textContent = window.I18N["common.start"]; (repeated in 3 places, no fallback)
 function set_button_label() {
@@ -216,15 +217,16 @@ async function start_tone() {
         // Before: oscillator = context.createOscillator(); oscillator.type = ...; etc.
         // (all four lines used the module-level variable directly)
         const osc = context.createOscillator();
-        const gain_node = context.createGain()
+        const gain_node = context.createGain();
         gain_node.gain.setValueAtTime(0, context.currentTime);
-        gain_node.gain.linearRampToValueAtTime(0.2, context.currentTime + 0.03);
+        gain_node.gain.linearRampToValueAtTime(.5, context.currentTime + 0.1);
         osc.type = "sine";
         osc.frequency.value = midiToFreq(midi, a4);
         osc.connect(gain_node).connect(context.destination);
-        osc.addEventListener("ended", () => {osc.disconnect(), gain_node.disconnect()});
+        osc.addEventListener("ended", () => { osc.disconnect(); gain_node.disconnect()});
         osc.start();
         oscillator = osc;
+        gain = gain_node;
 
     // Before: } finally { if (!started) { playing = false; play_btn.textContent = ...; } }
     } catch (error) {
@@ -239,11 +241,18 @@ async function start_tone() {
 function stop_tone() {
     // Before: (no counter, so a Stop during the await could not cancel a pending start)
     start_attempt++;
-
+    
     if (oscillator) {
-        oscillator.stop();
-        // Before: oscillator.disconnect();   (now done by the ended listener)
+        const old_osc = oscillator;
+        const old_gain = gain;
         oscillator = null;
+        gain = null;
+
+        const now = context.currentTime;
+        old_gain.gain.cancelScheduledValues(now);
+        old_gain.gain.setValueAtTime(old_gain.gain.value, now);
+        old_gain.gain.linearRampToValueAtTime(0, now + 0.1);
+        old_osc.stop(now + 0.15);
     }
 
     // Before: playing = false; play_btn.textContent = window.I18N["common.start"];
