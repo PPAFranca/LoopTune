@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, request, session, url_for
-from pathlib import Path 
+from pathlib import Path
 from urllib.parse import urlparse
 import json
 import os

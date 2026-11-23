@@ -21,6 +21,7 @@ export function midiToFreq(midi, a4=440) {
     return a4 * Math.pow(2, (midi - 69) / 12);
 }
 
+// Written with help from Claude (Anthropic), per CS50's rules on citing AI.
 export function letterToMidi(letter, octave) {
     const noteMap = {
         C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11
