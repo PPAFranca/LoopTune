@@ -1,5 +1,49 @@
+{# Written with help from Claude (Anthropic), per CS50's rules on citing AI. #}
+
 {% extends "layout.html" %}
 
+{% block title %}{{ t("nav.metronome") }}{% endblock %}
+
 {% block main %}
-    <h1>Hello metronome</h1>
+<div class="text-center">
+    <h1>{{ t("nav.metronome") }}</h1>
+
+    <div class="val">100 (placeholder)</div>
+
+    <div class="mb-3">
+        <label for="tempo" class="form-label">{{ t("common.tempo") }}</label>
+        <div class="input-group d-inline-flex w-auto">
+            <input type="number" class="form-control input-narrow" id="tempo" min="30" max="300" value="100">
+            <span class="input-group-text">BPM</span>
+        </div>
+        <div class="w-50 mx-auto" id="tempo-range-container">
+            <label for="tempo-range" class="visually-hidden">{{ t("common.tempo") }}</label>
+            <input type="range" class="form-range" id="tempo-range" min="30" max="300" value="100">
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="subdivision" class="form-label">{{ t("common.subdivision") }}</label>
+        <div class="input-group d-inline-flex w-auto">
+            <select class="form-select" id="subdivision"></select>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="beat" class="form-label">{{ t("common.beat") }}</label>
+        <div class="input-group d-inline-flex w-auto">
+            <select class="form-select" id="beat"></select>
+        </div>
+    </div>
+
+    <div class="mb-3 d-flex justify-content-center gap-2">
+        <button type="button" class="btn btn-primary" id="play-btn">{{ t("common.start") }}</button>
+        <button type="button" class="btn btn-outline-primary" id="tap-btn">{{ t("common.tap") }}</button>
+    </div>
+    
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="module" src="{{ url_for('static', filename='js/metronome.js') }}"></script>
 {% endblock %}

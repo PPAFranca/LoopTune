@@ -6,7 +6,7 @@
     "nav.looper": "Looper",
     "home.heading": "This is LoopTune",
     "home.tagline": "Metronome, Pitch Pipe, Tuner and Looper all in one place",
-    "home.metronome": "Keep steady time with an adjustable tempo, time signature and accented first beat. Tap along to find a tempo.",
+    "home.metronome": "Keep steady time with an adjustable tempo, subdivision and accented first beat. Tap along to find a tempo.",
     "home.pitchpipe": "Play any reference note, or the open strings of your instrument, to tune by ear.",
     "home.tuner": "Play a note and see through your microphone how sharp or flat it is.",
     "home.looper": "Record layers over a metronome, stack them into a loop and export every take.",
@@ -22,7 +22,11 @@
     "common.stop": "Stop",
     "common.note": "Note",
     "common.octave": "Octave",
-    
+    "common.tempo": "Tempo",
+    "common.subdivision": "Subdivision",
+    "common.beat": "Beat",
+    "common.tap": "Tap BPM",
+
     "solfege.C": "Do",
     "solfege.D": "Re",  
     "solfege.E": "Mi",
