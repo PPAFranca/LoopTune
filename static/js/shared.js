@@ -27,8 +27,8 @@ export function letterToMidi(letter, octave) {
         C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11
     };
     const noteIndex = noteMap[letter];
-    if (noteIndex === undefined) return null;
-    return (octave + 1) * 12 + noteIndex;
+    if (noteIndex === undefined) return NaN;
+    return Number((octave + 1) * 12 + noteIndex);
 }
 
 export function midiToName(midi, useFlats=false) {
@@ -44,4 +44,13 @@ export function midiToName(midi, useFlats=false) {
 
 export function stepSemitone(midi, direction) {
     return { midi: midi + direction, useFlats: direction < 0 };
+}
+
+export function noteLabel(letter, noteStyle) {
+    return (noteStyle === "solfege") ? window.I18N["solfege." + letter] : letter;
+}
+
+export function fullName(midi, useFlats, noteStyle) {
+    const { letter, accidental, octave } = midiToName(midi, useFlats);
+    return noteLabel(letter, noteStyle) + accidental + octave;
 }

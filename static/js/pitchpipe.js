@@ -1,4 +1,4 @@
-import { INSTRUMENTS_PRESETS, clamp, midiToFreq, letterToMidi, midiToName, stepSemitone } from "./shared.js";
+import { INSTRUMENTS_PRESETS, clamp, midiToFreq, letterToMidi, midiToName, stepSemitone, noteLabel, fullName } from "./shared.js";
 
 const instrumentSelect = document.getElementById("instrument");
 const noteSelect = document.getElementById("note");
@@ -31,20 +31,11 @@ for (const key of Object.keys(INSTRUMENTS_PRESETS)) {
 
 instrumentSelect.value = instrument;
 
-function noteLabel(letter) {
-    return (noteStyle === "solfege") ? window.I18N["solfege." + letter] : letter;
-}
-
-function fullName(midi) {
-    const { letter, accidental, octave } = midiToName(midi, useFlats);
-    return noteLabel(letter) + accidental + octave;
-}
-
 function populateOctaves() {
     octaveSelect.innerHTML = "";
 
-    const firstOctave = Math.floor(preset.min_midi / 12) - 1;
-    const lastOctave = Math.floor(preset.max_midi / 12) - 1;
+    const firstOctave = Math.floor(preset.minMidi / 12) - 1;
+    const lastOctave = Math.floor(preset.maxMidi / 12) - 1;
 
     for (let octave = firstOctave; octave <= lastOctave; octave++) {
         const option = document.createElement("option");
@@ -64,7 +55,7 @@ function populateNotes() {
             const option = document.createElement("option");
 
             option.value = stringMidi;
-            option.textContent = fullName(stringMidi);
+            option.textContent = fullName(stringMidi, useFlats, noteStyle);
 
             noteSelect.appendChild(option);
         }
@@ -75,7 +66,7 @@ function populateNotes() {
             const option = document.createElement("option");
 
             option.value = letter;
-            option.textContent = noteLabel(letter);
+            option.textContent = noteLabel(letter, noteStyle);
 
             noteSelect.appendChild(option);
         }
@@ -84,7 +75,7 @@ function populateNotes() {
 
 function updateDisplay() {
     nowPlaying.textContent =
-        `${fullName(midi)} — ${midiToFreq(midi, a4).toFixed(1)} Hz`;
+        `${fullName(midi, useFlats, noteStyle)} — ${midiToFreq(midi, a4).toFixed(1)} Hz`;
     updateTone();
     if (instrument !== "chromatic") {
         noteSelect.value = String(midi);
@@ -95,8 +86,8 @@ function updateDisplay() {
         octaveSelect.value = String(octave);
     }
 
-    flatBtn.disabled = midi <= preset.min_midi;
-    sharpBtn.disabled = midi >= preset.max_midi;
+    flatBtn.disabled = midi <= preset.minMidi;
+    sharpBtn.disabled = midi >= preset.maxMidi;
 }
 
 function updateTone() {
@@ -106,7 +97,7 @@ function updateTone() {
 }
 
 function setMidi(newMidi) {
-    midi = clamp(newMidi, preset.min_midi, preset.max_midi);
+    midi = clamp(newMidi, preset.minMidi, preset.maxMidi);
 
     updateDisplay();
 }
@@ -120,7 +111,7 @@ function applyInstrument() {
         midi = preset.strings[0];
         useFlats = false;
     } else {
-        midi = clamp(midi, preset.min_midi, preset.max_midi);
+        midi = clamp(midi, preset.minMidi, preset.maxMidi);
         populateOctaves();
     }
 
@@ -145,7 +136,9 @@ noteSelect.addEventListener("change", () => {
     if (instrument !== "chromatic") {
         setMidi(Number(noteSelect.value));
     } else {
-        setMidi(Number(letterToMidi(noteSelect.value, Number(octaveSelect.value))));
+        const newMidi = letterToMidi(noteSelect.value, Number(octaveSelect.value));
+        if (!Number.isFinite(newMidi)) return;
+        setMidi(newMidi);
     }
     updateDisplay();
 });
@@ -155,8 +148,6 @@ octaveSelect.addEventListener("change", () => {
     const currentOctave = midiToName(midi, useFlats).octave;
 
     setMidi(midi + 12 * (newOctave - currentOctave));
-
-    updateDisplay();
 });
 
 instrumentSelect.addEventListener("change", () => {
@@ -208,7 +199,7 @@ async function startTone() {
         const gainNode = context.createGain();
         gainNode.gain.setValueAtTime(0, context.currentTime);
         gainNode.gain.linearRampToValueAtTime(0.5, context.currentTime + 0.1);
-        osc.type = "sine";
+        osc.type = "triangle";
         osc.frequency.value = midiToFreq(midi, a4);
         osc.connect(gainNode).connect(context.destination);
         osc.addEventListener("ended", () => {
