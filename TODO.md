@@ -8,12 +8,12 @@ Last updated: 2026-11-23, from the files as they were that day. The pitch pipe t
 - [ ] Language dropdown labels: codes ("en", "pt-BR") or full names ("English", "Português").
 - [ ] Language dropdown on phones: visible next to the hamburger (current) or inside the menu.
 - [ ] Where the shared look-ahead scheduler lives: in shared.js or a separate module.
-- [ ] Portuguese wording of "take" (currently "gravação").
-- [ ] "Diapasão" for the pitch pipe: it literally means tuning fork. Check with another Brazilian musician.
+- [x] Portuguese wording of "take" (currently "gravação").
+- [x] "Diapasão" for the pitch pipe: it literally means tuning fork. Check with another Brazilian musician.
 - [ ] Pitch pipe waveform: sine (current) vs triangle/custom. Triangle is easier to hear on laptop and phone speakers (missing fundamental).
 - [ ] First-visit note style: from the page language (pt-BR -> Do Re Mi, en -> letters) or always letters.
 - [ ] Changing instrument while the tone is playing: keep playing on the new instrument's first string (current behavior, cheapest) or stop.
-- [ ] Accidental selected (say C♯4): the note select shows "C" while the now-playing line says "C♯4". Keep on purpose or change.
+- [x] Accidental selected (say C♯4): the note select shows "C" while the now-playing line says "C♯4". Keep on purpose or change.
 - [ ] JS naming: variables are snake_case but functions mix camelCase (updateDisplay, midiToFreq) and snake_case (start_tone, set_button_label). Pick one before the codebase grows.
 
 ## Known bugs

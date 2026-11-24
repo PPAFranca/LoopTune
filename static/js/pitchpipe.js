@@ -1,45 +1,47 @@
-import { INSTRUMENTS_PRESETS, clamp, midiToFreq, letterToMidi, midiToName, stepSemitone} from "./shared.js";
+import { INSTRUMENTS_PRESETS, clamp, midiToFreq, letterToMidi, midiToName, stepSemitone } from "./shared.js";
 
-const instrument_select = document.getElementById("instrument");
-const note_select = document.getElementById("note");
-const octave_select = document.getElementById("octave");
-const flat_btn = document.getElementById("flat-btn");
-const sharp_btn = document.getElementById("sharp-btn");
-const a4_input = document.getElementById("a4");
-const now_playing = document.getElementById("now-playing");
-const play_btn = document.getElementById("play-btn");
-const chromatic_controls = document.getElementById("chromatic-controls");
+const instrumentSelect = document.getElementById("instrument");
+const noteSelect = document.getElementById("note");
+const octaveSelect = document.getElementById("octave");
+const flatBtn = document.getElementById("flat-btn");
+const sharpBtn = document.getElementById("sharp-btn");
+const a4Input = document.getElementById("a4");
+const nowPlaying = document.getElementById("now-playing");
+const playBtn = document.getElementById("play-btn");
+const chromaticControls = document.getElementById("chromatic-controls");
 
-let instrument = 'chromatic';
+let instrument = "chromatic";
 let midi = 69;
-let use_flats = false;
+let useFlats = false;
 let a4 = 440;
-let note_style = 'letters';
+let noteStyle = "letters";
 let playing = false;
-let preset = INSTRUMENTS_PRESETS[instrument]; 
+let preset = INSTRUMENTS_PRESETS[instrument];
+let context;
+let oscillator;
+let startAttempt = 0;
+let gain;
 
 for (const key of Object.keys(INSTRUMENTS_PRESETS)) {
     const option = document.createElement("option");
     option.value = key;
     option.textContent = window.I18N["instrument." + key] ?? ("instrument." + key);
-    instrument_select.appendChild(option);
+    instrumentSelect.appendChild(option);
 }
 
-instrument_select.value = instrument;
-
+instrumentSelect.value = instrument;
 
 function noteLabel(letter) {
-    return (note_style === 'solfege') ? window.I18N["solfege." + letter] : letter;
-} 
-
+    return (noteStyle === "solfege") ? window.I18N["solfege." + letter] : letter;
+}
 
 function fullName(midi) {
-    const { letter, accidental, octave } = midiToName(midi, use_flats);
+    const { letter, accidental, octave } = midiToName(midi, useFlats);
     return noteLabel(letter) + accidental + octave;
 }
 
 function populateOctaves() {
-    octave_select.innerHTML = "";
+    octaveSelect.innerHTML = "";
 
     const firstOctave = Math.floor(preset.min_midi / 12) - 1;
     const lastOctave = Math.floor(preset.max_midi / 12) - 1;
@@ -50,22 +52,21 @@ function populateOctaves() {
         option.value = octave;
         option.textContent = octave;
 
-        octave_select.appendChild(option);
+        octaveSelect.appendChild(option);
     }
 }
 
-
 function populateNotes() {
-    note_select.innerHTML = "";
+    noteSelect.innerHTML = "";
 
     if (instrument !== "chromatic") {
-        for (const string_midi of preset.strings) {
+        for (const stringMidi of preset.strings) {
             const option = document.createElement("option");
 
-            option.value = string_midi;
-            option.textContent = fullName(string_midi);
+            option.value = stringMidi;
+            option.textContent = fullName(stringMidi);
 
-            note_select.appendChild(option);
+            noteSelect.appendChild(option);
         }
     } else {
         const letters = ["C", "D", "E", "F", "G", "A", "B"];
@@ -76,43 +77,48 @@ function populateNotes() {
             option.value = letter;
             option.textContent = noteLabel(letter);
 
-            note_select.appendChild(option);
+            noteSelect.appendChild(option);
         }
     }
 }
 
 function updateDisplay() {
-    now_playing.textContent =
+    nowPlaying.textContent =
         `${fullName(midi)} — ${midiToFreq(midi, a4).toFixed(1)} Hz`;
-
+    updateTone();
     if (instrument !== "chromatic") {
-        note_select.value = String(midi);
+        noteSelect.value = String(midi);
     } else {
-        const { letter, octave } = midiToName(midi, use_flats);
+        const { letter, octave } = midiToName(midi, useFlats);
 
-        note_select.value = letter;
-        octave_select.value = String(octave);
+        noteSelect.value = letter;
+        octaveSelect.value = String(octave);
     }
 
-    flat_btn.disabled = midi <= preset.min_midi;
-    sharp_btn.disabled = midi >= preset.max_midi;
+    flatBtn.disabled = midi <= preset.min_midi;
+    sharpBtn.disabled = midi >= preset.max_midi;
+}
+
+function updateTone() {
+    if (!oscillator) return;
+    const target = midiToFreq(midi, a4);
+    oscillator.frequency.setTargetAtTime(target, context.currentTime, 0.1);
 }
 
 function setMidi(newMidi) {
     midi = clamp(newMidi, preset.min_midi, preset.max_midi);
 
     updateDisplay();
-
 }
 
 function applyInstrument() {
     preset = INSTRUMENTS_PRESETS[instrument];
 
-    chromatic_controls.hidden = (instrument !== "chromatic");
+    chromaticControls.hidden = (instrument !== "chromatic");
 
     if (instrument !== "chromatic") {
         midi = preset.strings[0];
-        use_flats = false;
+        useFlats = false;
     } else {
         midi = clamp(midi, preset.min_midi, preset.max_midi);
         populateOctaves();
@@ -122,88 +128,73 @@ function applyInstrument() {
     updateDisplay();
 }
 
-applyInstrument()
+applyInstrument();
 
 // Written with help from Claude (Anthropic), per CS50's rules on citing AI.
 function stepBy(direction) {
     const stepped = stepSemitone(midi, direction);
-    use_flats = stepped.use_flats;   // up = sharps, down = flats
+    useFlats = stepped.useFlats;   // up = sharps, down = flats
     setMidi(stepped.midi);          // clamps to the preset range, then re-renders
 }
 
-sharp_btn.addEventListener("click", () => stepBy(1));
+sharpBtn.addEventListener("click", () => stepBy(1));
 
-flat_btn.addEventListener("click", () => stepBy(-1));
+flatBtn.addEventListener("click", () => stepBy(-1));
 
-
-note_select.addEventListener("change", () => {
-
+noteSelect.addEventListener("change", () => {
     if (instrument !== "chromatic") {
-        setMidi(Number(note_select.value));
+        setMidi(Number(noteSelect.value));
     } else {
-        setMidi(Number(letterToMidi(note_select.value, Number(octave_select.value))));
+        setMidi(Number(letterToMidi(noteSelect.value, Number(octaveSelect.value))));
     }
     updateDisplay();
 });
 
+octaveSelect.addEventListener("change", () => {
+    const newOctave = Number(octaveSelect.value);
+    const currentOctave = midiToName(midi, useFlats).octave;
 
-octave_select.addEventListener("change", () => {
-
-    const new_octave = Number(octave_select.value);
-    const current_octave = midiToName(midi, use_flats).octave;
-
-    setMidi(midi + 12 * (Number(new_octave) - Number(current_octave)));
+    setMidi(midi + 12 * (newOctave - currentOctave));
 
     updateDisplay();
 });
 
-
-instrument_select.addEventListener("change", () => {
-    instrument = instrument_select.value;
+instrumentSelect.addEventListener("change", () => {
+    instrument = instrumentSelect.value;
     applyInstrument();
 });
 
-
 // Written with help from Claude (Anthropic), per CS50's rules on citing AI.
 function changeNoteStyle(event) {
-    note_style = event.target.value;   
-    populateNotes();                   
-    updateDisplay();                   
+    noteStyle = event.target.value;
+    populateNotes();
+    updateDisplay();
 }
 
 for (const radio of document.querySelectorAll('input[name="note-style"]')) {
     radio.addEventListener("change", changeNoteStyle);
 }
 
-a4_input.addEventListener("change", () => {
-    if (Number.isFinite(Number(a4_input.value))) {
-        a4 = clamp(Number(a4_input.value), 415, 466);
-        a4_input.value = a4;
+a4Input.addEventListener("change", () => {
+    if (Number.isFinite(Number(a4Input.value))) {
+        a4 = clamp(Number(a4Input.value), 415, 466);
+        a4Input.value = a4;
         updateDisplay();
     }
 });
 
-
 // Written with help from Claude (Anthropic), per CS50's rules on citing AI. (The gain logic was me.)
-let context;
-let oscillator;
-let start_attempt = 0;
-let gain;
 
-// Before: play_btn.textContent = window.I18N["common.start"]; (repeated in 3 places, no fallback)
-function set_button_label() {
+function setButtonLabel() {
     const key = playing ? "common.stop" : "common.start";
-    play_btn.textContent = window.I18N[key] ?? key;
+    playBtn.textContent = window.I18N[key] ?? key;
 }
 
-async function start_tone() {
-    // Before: (no attempt counter)
-    const attempt = ++start_attempt;
+async function startTone() {
+    const attempt = ++startAttempt;
     playing = true;
-    // Before: the label only changed to Stop after oscillator.start()
-    set_button_label();
+    setButtonLabel();
 
-    // Before: let started = false;   (removed along with the finally block)
     try {
         context ??= new AudioContext();
 
@@ -211,59 +202,56 @@ async function start_tone() {
             await context.resume();
         }
 
-        // Before: if (!playing) return;
-        if (attempt !== start_attempt) return;
+        if (attempt !== startAttempt) return;
 
-        // Before: oscillator = context.createOscillator(); oscillator.type = ...; etc.
-        // (all four lines used the module-level variable directly)
         const osc = context.createOscillator();
-        const gain_node = context.createGain();
-        gain_node.gain.setValueAtTime(0, context.currentTime);
-        gain_node.gain.linearRampToValueAtTime(.5, context.currentTime + 0.1);
+        const gainNode = context.createGain();
+        gainNode.gain.setValueAtTime(0, context.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.5, context.currentTime + 0.1);
         osc.type = "sine";
         osc.frequency.value = midiToFreq(midi, a4);
-        osc.connect(gain_node).connect(context.destination);
-        osc.addEventListener("ended", () => { osc.disconnect(); gain_node.disconnect()});
+        osc.connect(gainNode).connect(context.destination);
+        osc.addEventListener("ended", () => {
+            osc.disconnect();
+            gainNode.disconnect();
+        });
         osc.start();
         oscillator = osc;
-        gain = gain_node;
-
-    // Before: } finally { if (!started) { playing = false; play_btn.textContent = ...; } }
+        gain = gainNode;
     } catch (error) {
         console.error(error);
-        if (attempt === start_attempt) {
+        if (attempt === startAttempt) {
             playing = false;
-            set_button_label();
+            setButtonLabel();
         }
     }
 }
 
-function stop_tone() {
-    // Before: (no counter, so a Stop during the await could not cancel a pending start)
-    start_attempt++;
-    
+function stopTone() {
+    startAttempt++;
+
     if (oscillator) {
-        const old_osc = oscillator;
-        const old_gain = gain;
+        const oldOsc = oscillator;
+        const oldGain = gain;
         oscillator = null;
         gain = null;
 
         const now = context.currentTime;
-        old_gain.gain.cancelScheduledValues(now);
-        old_gain.gain.setValueAtTime(old_gain.gain.value, now);
-        old_gain.gain.linearRampToValueAtTime(0, now + 0.1);
-        old_osc.stop(now + 0.15);
+        oldGain.gain.cancelScheduledValues(now);
+        oldGain.gain.setValueAtTime(oldGain.gain.value, now);
+        oldGain.gain.linearRampToValueAtTime(0, now + 0.1);
+        oldOsc.stop(now + 0.15);
     }
 
-    // Before: playing = false; play_btn.textContent = window.I18N["common.start"];
     playing = false;
-    set_button_label();
+    setButtonLabel();
 }
 
-play_btn.addEventListener("click", () => {
+playBtn.addEventListener("click", () => {
     if (playing) {
-        stop_tone();
+        stopTone();
     } else {
-        start_tone();
+        startTone();
     }
 });
+

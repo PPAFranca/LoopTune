@@ -1,8 +1,9 @@
-from flask import Flask, render_template, redirect, request, session, url_for
+import os
 from pathlib import Path
 from urllib.parse import urlparse
 import json
-import os
+from flask import Flask, render_template, redirect, request, url_for
+
 
 app = Flask(__name__)
 
@@ -19,6 +20,7 @@ for lang in SUPPORTED:
 
 # Drafted by Claude
 def current_language():
+    """Return the user's preferred supported language."""
     saved = request.cookies.get("lang")
     if saved in SUPPORTED:
         return saved
@@ -33,6 +35,7 @@ def current_language():
 # Written with help from Claude (Anthropic).
 @app.route("/language/<lang>")
 def set_language(lang):
+    """Save the selected language and redirect to the previous page."""
     # Go back to the page the user came from, but only if it's on this site
     target = request.referrer
     if not target or urlparse(target).netloc != request.host:
@@ -47,6 +50,7 @@ def set_language(lang):
 # Written with help from Claude (Anthropic).
 @app.context_processor
 def inject_translations():
+    """Make the active language and translation strings available to templates."""
     lang = current_language()
     strings = {**TRANSLATIONS[DEFAULT_LANG], **TRANSLATIONS[lang]}
 
@@ -57,28 +61,34 @@ def inject_translations():
 
 @app.context_processor
 def inject_constants():
+    """Make supported languages and features available to templates."""
     return {"SUPPORTED": SUPPORTED, "FEATURES": FEATURES}
 
 @app.route("/")
 def index():
+    """Render the home page."""
     return render_template("index.html")
 
 
 @app.route("/metronome")
 def metronome():
+    """Render the metronome page."""
     return render_template("metronome.html")
 
 
 @app.route("/pitchpipe")
 def pitchpipe():
+    """Render the pitchpipe page."""
     return render_template("pitchpipe.html")
 
 
 @app.route("/tuner")
 def tuner():
+    """Render the tuner page."""
     return render_template("tuner.html")
 
 
 @app.route("/looper")
 def looper():
+    """Render the looper page."""
     return render_template("looper.html")
