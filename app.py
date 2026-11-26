@@ -10,6 +10,13 @@ app = Flask(__name__)
 FEATURES = ["metronome", "pitchpipe", "tuner", "looper"]
 SUPPORTED = ["en", "pt-BR"]
 DEFAULT_LANG = "en"
+SUBDIVISIONS = [{"value": "1", "pattern": "1", "alt": "Whole note"},
+                {"value": "2", "pattern": "11", "alt": "Half note"},
+                {"value": "3", "pattern": "111", "alt": "Quarter note"},
+                {"value": "4", "pattern": "1111", "alt": "Eighth note"},
+                {"value": "5", "pattern": "1001", "alt": "Sixteenth note"},
+                {"value": "6", "pattern": "1100", "alt": "Thirty-second note"},
+                {"value": "7", "pattern": "101011", "alt": "Sixty-fourth note"}]
 
 # Load every translation file at startup
 TRANSLATIONS = {}
@@ -62,7 +69,7 @@ def inject_translations():
 @app.context_processor
 def inject_constants():
     """Make supported languages and features available to templates."""
-    return {"SUPPORTED": SUPPORTED, "FEATURES": FEATURES}
+    return {"SUPPORTED": SUPPORTED, "FEATURES": FEATURES, "SUBDIVISIONS": SUBDIVISIONS}
 
 @app.route("/")
 def index():

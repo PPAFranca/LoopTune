@@ -8,11 +8,12 @@
 <div class="text-center">
     <h1>{{ t("nav.metronome") }}</h1>
 
-    <div class="val">100 (placeholder)</div>
+    <div class="val" style="margin-bottom: 20px;">100 (placeholder)</div>
 
-    <div class="mb-3">
-        <label for="tempo" class="form-label">{{ t("common.tempo") }}</label>
-        <div class="input-group d-inline-flex w-auto">
+    <div class="mb-3" style="margin-bottom: 20px;">
+        
+        <span id="tempo-label" class="form-label d-block d-inline-flex">{{ t("common.tempo") }}</span>
+        <div class="input-group d-inline-flex w-auto" style="margin-bottom: 20px;">
             <input type="number" class="form-control input-narrow" id="tempo" min="30" max="300" value="100">
             <span class="input-group-text">BPM</span>
         </div>
@@ -22,17 +23,44 @@
         </div>
     </div>
 
-    <div class="mb-3">
-        <label for="subdivision" class="form-label">{{ t("common.subdivision") }}</label>
-        <div class="input-group d-inline-flex w-auto">
-            <select class="form-select" id="subdivision"></select>
+    <div class="mb-3 mx-auto text-center">
+        <span id="subdivision-label" class="form-label d-block">{{ t("common.subdivision") }}</span>
+            <div class="d-grid gap-2 justify-content-center" style="grid-template-columns: repeat(3, 3rem); justify-items: center;">
+            {% for subdivision in SUBDIVISIONS %}
+
+                <div class="form-check" {% if subdivision['value'] == '1' %}style="grid-column: 1 / -1;"{% endif %}>
+                    <input
+                        class="hidden js-subdivisions-change"
+                        type="radio"
+                        name="subdivision"
+                        id="subdivision-{{ subdivision['value'] }}"
+                        value="{{ subdivision['value'] }}"
+                        data-pattern="{{ subdivision['pattern'] }}"
+                        autocomplete="off"
+                        {% if subdivision['value'] == "1" %}checked{% endif %}
+                    >
+                    <label
+                        class="btn btn-secondary subdivision-label"
+                        for="subdivision-{{ subdivision['value'] }}"
+                    >
+                        <img
+                            src="{{ url_for('static', filename='images/subdivisions/' ~ subdivision['value'] ~ '.png') }}"
+                            alt="{{ subdivision['alt'] }}"
+                        >
+                    </label>
+                </div>
+            {% endfor %}
         </div>
     </div>
 
     <div class="mb-3">
-        <label for="beat" class="form-label">{{ t("common.beat") }}</label>
+        <span id="beat-label" class="form-label d-block d-inline-flex">{{ t("common.beat") }}</span>
         <div class="input-group d-inline-flex w-auto">
-            <select class="form-select" id="beat"></select>
+            <select class="form-select" id="beat">
+                {% for beat in range(10) %}
+                    <option value="{{ beat }}">{{ beat }}</option>
+                {% endfor %}
+            </select>
         </div>
     </div>
 
